@@ -1,0 +1,19 @@
+Speed Racer Credits
+
+All coding by me.
+IDE: Visual Studio Code (VS Code)
+VS Code download: https://code.visualstudio.com/download
+
+
+Images:
+
+Car image:
+https://www.vectorstock.com/royalty-free-vector/pixel-old-race-car-vector-18351703
+
+
+Sounds:
+
+Main theme song:
+Chaoz Impact, by ParagonX9
+Chaoz Impact Newgrounds page (you can download it from here): https://www.newgrounds.com/audio/listen/152047
+Chaoz Impact YouTube video: https://www.youtube.com/watch?v=BvAnA5XRrUE
