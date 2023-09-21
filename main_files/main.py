@@ -11,11 +11,6 @@ WINDOWHEIGHT = 600
 CENTERX = WINDOWWIDTH / 2
 CENTERY = WINDOWHEIGHT / 2
 
-# Car constants.
-MIDDLE = 'middle'
-TOP = 'top'
-BOTTOM = 'bottom'
-
 # Color constants.
 WHITE = (255, 255, 255)
 
@@ -51,10 +46,11 @@ def title_screen():
 
 def run_game():
     """Run the game, and return when the player hits an obstacle."""
+    global car_lane
 
     # Define game variables.
     score = 0
-    car_lane = MIDDLE
+    car_lane = 2
     
     # Start the car on the left side center of the screen.
     car_rect.midleft = (10, CENTERY)
@@ -81,10 +77,10 @@ def run_game():
 
                 # Check for arrow keys or WASD.
                 if event.key in (K_UP, K_w):
-                    move_car_up(car_lane, True)
+                    move_car_up(True)
                 
                 elif event.key in (K_DOWN, K_s):
-                    move_car_up(car_lane, False)
+                    move_car_up(False)
 
 
         # Draw the game.
@@ -98,22 +94,30 @@ def run_game():
         MAINCLOCK.tick(FPS)
 
 
-def move_car_up(car_lane, up):
+def move_car_up(up):
     """Move the car up a lane."""
+    global car_lane
 
     # Check what direction the car should move.
     if up:
         # Check if the car can go up a lane.
-        if car_lane != TOP:
+        if car_lane != 3:
             # Move the car up.
-            for i in range(0, 50):
+            for i in range(0, 80):
                 car_rect.y -= 2
+
+            # Update the car's lane.
+            car_lane += 1
+
     else:
         # Check if the car can go down a lane.
-        if car_lane != BOTTOM:
+        if car_lane != 1:
             # Move the car down.
-            for i in range(0, 50):
+            for i in range(0, 80):
                 car_rect.y += 2
+
+            # Update the car's lane.
+            car_lane -= 1
 
 
 def game_over():
