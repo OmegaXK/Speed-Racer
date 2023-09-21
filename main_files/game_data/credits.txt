@@ -4,6 +4,10 @@ All coding by me.
 IDE: Visual Studio Code (VS Code)
 VS Code download: https://code.visualstudio.com/download
 
+My resources:
+Image editor: https://pixlr.com/x/
+Image background remover: https://www.remove.bg/
+
 
 Images:
 
