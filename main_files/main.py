@@ -48,6 +48,10 @@ def run_game():
     """Run the game, and return when the player hits an obstacle."""
     global car_lane
 
+    # Start the music.
+    pygame.mixer.music.load("sounds/music.wav")
+    pygame.mixer.music.play(-1, 0.0)
+
     # Define game variables.
     score = 0
     car_lane = 2
@@ -82,9 +86,8 @@ def run_game():
                 elif event.key in (K_DOWN, K_s):
                     move_car_up(False)
 
-
         # Draw the game.
-        DISPLAYSURF.fill(WHITE)
+        DISPLAYSURF.blit(bg_img, bg_rect)
 
         # Draw the player.
         DISPLAYSURF.blit(car_img, car_rect)
@@ -127,12 +130,21 @@ def game_over():
 
 def load_assets():
     """Load the game's assets."""
-    global car_img, car_rect
+    global car_img, car_rect, arrow, bg_img, bg_rect
+
+    # Load in the background and position it.
+    bg_image = pygame.image.load("images/race_track.png")
+    bg_img = pygame.transform.scale(bg_image, (900, 500))
+    bg_rect = bg_img.get_rect()
+    bg_rect.center = (CENTERX, CENTERY)
 
     # Load the car sprite.
     car_img = pygame.image.load('images/car.png')
     car_img = pygame.transform.scale(car_img, (300, 100))
     car_rect = car_img.get_rect()
+
+    # Load the arrow image.
+    arrow = pygame.image.load("images/arrow.png")
 
     return
 
