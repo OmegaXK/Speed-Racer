@@ -46,10 +46,9 @@ def title_screen():
 
 def run_game():
     """Run the game, and return when the player hits an obstacle."""
-    global car_lane
+    global car_lane, score
 
     # Start the music.
-    pygame.mixer.music.load("sounds/music.wav")
     pygame.mixer.music.play(-1, 0.0)
 
     # Define game variables.
@@ -89,12 +88,22 @@ def run_game():
         # Draw the game.
         DISPLAYSURF.blit(bg_img, bg_rect)
 
+        # Update the score.
+        score += 1
+
         # Draw the player.
         DISPLAYSURF.blit(car_img, car_rect)
+
+        # Check if arrows need to be spawned.
+        spawn_arrows()
 
         # Update the game.
         pygame.display.update()
         MAINCLOCK.tick(FPS)
+
+
+def spawn_arrows():
+    """Spawn arrows if the time is right."""
 
 
 def move_car_up(up):
@@ -125,12 +134,15 @@ def move_car_up(up):
 
 def game_over():
     """Run the game's game over screen."""
-    pass
+    terminate()
 
 
 def load_assets():
     """Load the game's assets."""
     global car_img, car_rect, arrow, bg_img, bg_rect
+
+    # Load the music.
+    pygame.mixer.music.load("sounds/chaoz_impact.mp3")
 
     # Load in the background and position it.
     bg_image = pygame.image.load("images/race_track.png")
