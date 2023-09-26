@@ -8,11 +8,38 @@ from pathlib import Path
 # Set up window constants.
 WINDOWWIDTH = 1000
 WINDOWHEIGHT = 600
+TRACKWIDTH = 900
+TRACKHEIGHT = 500
 CENTERX = WINDOWWIDTH / 2
 CENTERY = WINDOWHEIGHT / 2
 
+# Set arrow constants.
+ARROWSPAWNRATE = 60
+ARROWSPEED = 10
+
 # Color constants.
 WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+LIGHTGRAY = (200, 200, 200)
+LIGHTRED = (255, 0, 0)
+RED = (255, 0 , 0)
+LIGHTGREEN = (0, 255, 0)
+GREEN = (0, 255, 0)
+LIGHTBLUE = (0, 0, 255)
+BLUE = (0, 0, 255)
+LIGHTYELLOW = (255, 255, 0)
+YELLOW = (255, 255, 0)
+LIGHTORANGE = (255, 165, 0)
+ORANGE = (255, 165, 0)
+LIGHTPURPLE = (255, 0, 255)
+PURPLE = (255, 0, 255)
+LIGHTPINK = (255, 192, 203)
+PINK = (255, 192, 203)
+LIGHTBROWN = (139, 69, 19)
+BROWN = (139, 69, 19)
+LIGHTCYAN = (0, 255, 255)
+CYAN = (0, 255, 255)
+BG_COLOR = LIGHTGRAY
 
 # Other constants.
 FPS = 60
@@ -46,14 +73,16 @@ def title_screen():
 
 def run_game():
     """Run the game, and return when the player hits an obstacle."""
-    global car_lane, score
+    global car_lane, score, arrows, arrow_frame
 
     # Start the music.
     pygame.mixer.music.play(-1, 0.0)
 
-    # Define game variables.
+    # Reset game variables.
+    arrows = []
     score = 0
     car_lane = 2
+    arrow_frame = 0
     
     # Start the car on the left side center of the screen.
     car_rect.midleft = (10, CENTERY)
@@ -85,25 +114,61 @@ def run_game():
                 elif event.key in (K_DOWN, K_s):
                     move_car_up(False)
 
-        # Draw the game.
+        # Draw the game. Start with the background.
+        DISPLAYSURF.fill(BG_COLOR)
         DISPLAYSURF.blit(bg_img, bg_rect)
 
         # Update the score.
         score += 1
 
+        # Update the arrows.
+        spawn_arrows()
+        update_arrows()
+
         # Draw the player.
         DISPLAYSURF.blit(car_img, car_rect)
-
-        # Check if arrows need to be spawned.
-        spawn_arrows()
 
         # Update the game.
         pygame.display.update()
         MAINCLOCK.tick(FPS)
 
 
+def update_arrows():
+    """Update the currently active arrows."""
+    global arrows
+
+    for arrow in arrows[:]:
+        # Move the arrow.
+        arrow.x -= ARROWSPEED
+
+        # Check if the arrow is off the screen.
+        if arrow.x < 75:
+            # Remove the arrow.
+            arrows.remove(arrow)
+
+        # Draw the arrow.
+        DISPLAYSURF.blit(arrow_img, (arrow.x, arrow.y))
+
+
 def spawn_arrows():
     """Spawn arrows if the time is right."""
+    global score, arrows, arrow_frame 
+
+    offset = 160
+    y_positions = [CENTERY - offset, CENTERY, CENTERY + offset]
+
+    if arrow_frame >= ARROWSPAWNRATE:
+        # Reset the arrow frame.
+        arrow_frame = 0
+
+        # It's time to spawn arrows.
+        for y_pos in y_positions:
+            arrow_rect = arrow_img.get_rect()
+            arrow_rect.center = (TRACKWIDTH, y_pos)
+            arrows.append(arrow_rect)
+
+    else:
+        arrow_frame += 1
 
 
 def move_car_up(up):
@@ -139,7 +204,7 @@ def game_over():
 
 def load_assets():
     """Load the game's assets."""
-    global car_img, car_rect, arrow, bg_img, bg_rect
+    global car_img, car_rect, arrow, bg_img, bg_rect, arrow_img
 
     # Load the music.
     pygame.mixer.music.load("sounds/chaoz_impact.mp3")
@@ -156,7 +221,8 @@ def load_assets():
     car_rect = car_img.get_rect()
 
     # Load the arrow image.
-    arrow = pygame.image.load("images/arrow.png")
+    arrow_img = pygame.image.load("images/arrow.png")
+    arrow_img = pygame.transform.scale(arrow_img, (90, 90))
 
     return
 
