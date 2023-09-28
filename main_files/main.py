@@ -17,6 +17,11 @@ CENTERY = WINDOWHEIGHT / 2
 ARROWSPAWNRATE = 60
 ARROWSPEED = 10
 
+# Set obstacle constants.
+MINSPAWNTIME = 50
+MAXSPAWNTIME = 100
+OBSTACLESPEED = 10
+
 # Color constants.
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -73,16 +78,18 @@ def title_screen():
 
 def run_game():
     """Run the game, and return when the player hits an obstacle."""
-    global car_lane, score, arrows, arrow_frame
+    global car_lane, score, arrows, arrow_frame, obstacles, obstacle_frame
 
     # Start the music.
-    pygame.mixer.music.play(-1, 0.0)
+    #pygame.mixer.music.play(-1, 0.0)
 
     # Reset game variables.
     arrows = []
     score = 0
     car_lane = 2
     arrow_frame = 0
+    obstacle_frame = 0
+    obstacles = []
     
     # Start the car on the left side center of the screen.
     car_rect.midleft = (10, CENTERY)
@@ -104,10 +111,7 @@ def run_game():
                 if event.key == K_ESCAPE:
                     terminate()
 
-            # Check if the player has released a key.
-            if event.type == KEYUP:
-
-                # Check for arrow keys or WASD.
+                # Check for arrow keys or WASD, and move the car.
                 if event.key in (K_UP, K_w):
                     move_car_up(True)
                 
@@ -125,12 +129,75 @@ def run_game():
         spawn_arrows()
         update_arrows()
 
+        # Update the obstacles.
+        spawn_obstacles()
+        update_obstacles()
+
         # Draw the player.
         DISPLAYSURF.blit(car_img, car_rect)
 
         # Update the game.
         pygame.display.update()
         MAINCLOCK.tick(FPS)
+
+
+
+def update_obstacles():
+    """Update the currently active obstacles."""
+    global obstacles
+
+    for obstacle in obstacles[:]:
+        # Move the obstacle.
+        obstacle["rect"].x -= OBSTACLESPEED
+
+        # Check if the obstacle has hit the player.
+        if obstacle['rect'].colliderect(car_rect):
+            terminate()
+
+        # Check if the obstacle is off the screen.
+        if obstacle["rect"].x < 75:
+            # Remove the obstacle.
+            obstacles.remove(obstacle)
+
+        # Draw the obstacle.
+        DISPLAYSURF.blit(obstacle["img"], obstacle["rect"])
+    
+
+def spawn_obstacles():
+    """Spawn obstacles at random intervals."""
+    global obstacles, obstacle_frame
+
+    if obstacle_frame >= random.randint(MINSPAWNTIME, MAXSPAWNTIME):
+        # Reset the obstacle frame.
+        obstacle_frame = 0
+
+        # Choose a random obstacle to spawn.
+        obstacle = "rock"
+
+        # Spawn the obstacle.
+        if obstacle == "rock":
+            obstacle = {}
+            obstacle["img"] = rock_img
+            obstacle_rect = rock_img.get_rect()
+
+        # Set the obstacle's lane.
+        lane = random.randint(1, 3)
+        if lane == 1:
+            y_pos = CENTERY - 160
+        elif lane == 2:
+            y_pos = CENTERY
+        else:
+            y_pos = CENTERY + 160
+
+        # Set the obstacle's position.
+        obstacle_rect.center = (TRACKWIDTH, y_pos)
+        obstacle["rect"] = obstacle_rect
+
+        # Add the obstacle to the list.
+        obstacles.append(obstacle)
+
+    else:
+        obstacle_frame += 1
 
 
 def update_arrows():
@@ -152,7 +219,7 @@ def update_arrows():
 
 def spawn_arrows():
     """Spawn arrows if the time is right."""
-    global score, arrows, arrow_frame 
+    global arrows, arrow_frame 
 
     offset = 160
     y_positions = [CENTERY - offset, CENTERY, CENTERY + offset]
@@ -204,7 +271,7 @@ def game_over():
 
 def load_assets():
     """Load the game's assets."""
-    global car_img, car_rect, arrow, bg_img, bg_rect, arrow_img
+    global car_img, car_rect, bg_img, bg_rect, arrow_img, rock_img
 
     # Load the music.
     pygame.mixer.music.load("sounds/chaoz_impact.mp3")
@@ -223,6 +290,10 @@ def load_assets():
     # Load the arrow image.
     arrow_img = pygame.image.load("images/arrow.png")
     arrow_img = pygame.transform.scale(arrow_img, (90, 90))
+
+    # Load in the obstacles, starting with the rock.
+    rock_img = pygame.image.load("images/rock.png")
+    rock_img = pygame.transform.scale(rock_img, (100, 100))
 
     return
 
