@@ -15,12 +15,14 @@ CENTERY = WINDOWHEIGHT / 2
 
 # Set arrow constants.
 ARROWSPAWNRATE = 60
-ARROWSPEED = 10
 
 # Set obstacle constants.
+ROCK = 'rock'
+BARREL = 'barrel'
+OIL = 'oil'
+OBSTACLES = [ROCK, BARREL, OIL]
 MINSPAWNTIME = 50
 MAXSPAWNTIME = 100
-OBSTACLESPEED = 10
 
 # Color constants.
 WHITE = (255, 255, 255)
@@ -79,9 +81,10 @@ def title_screen():
 def run_game():
     """Run the game, and return when the player hits an obstacle."""
     global car_lane, score, arrows, arrow_frame, obstacles, obstacle_frame
+    global game_speed
 
     # Start the music.
-    #pygame.mixer.music.play(-1, 0.0)
+    pygame.mixer.music.play(-1, 0.0)
 
     # Reset game variables.
     arrows = []
@@ -90,9 +93,10 @@ def run_game():
     arrow_frame = 0
     obstacle_frame = 0
     obstacles = []
+    game_speed = 7
     
     # Start the car on the left side center of the screen.
-    car_rect.midleft = (10, CENTERY)
+    car_rect.midleft = (80, CENTERY)
 
     # Run the game running loop.
     while True:
@@ -125,6 +129,12 @@ def run_game():
         # Update the score.
         score += 1
 
+        # Draw the score.
+        draw_score(score)
+
+        # Update the speed.
+        update_speed()
+
         # Update the arrows.
         spawn_arrows()
         update_arrows()
@@ -141,6 +151,22 @@ def run_game():
         MAINCLOCK.tick(FPS)
 
 
+def update_speed():
+    """Make the game faster every five seconds."""
+    global game_speed 
+
+    if score % 500 == 0:
+        game_speed += 2
+
+
+def draw_score(score):
+    """Draw the score text on the screen."""
+
+    scorefont = create_font(40)
+    scoresurf = scorefont.render(f"Score: {score}", False, BLACK)
+    scorerect = scoresurf.get_rect()
+    DISPLAYSURF.blit(scoresurf, scorerect)
+
 
 def update_obstacles():
     """Update the currently active obstacles."""
@@ -148,7 +174,7 @@ def update_obstacles():
 
     for obstacle in obstacles[:]:
         # Move the obstacle.
-        obstacle["rect"].x -= OBSTACLESPEED
+        obstacle["rect"].x -= game_speed
 
         # Check if the obstacle has hit the player.
         if obstacle['rect'].colliderect(car_rect):
@@ -172,21 +198,38 @@ def spawn_obstacles():
         obstacle_frame = 0
 
         # Choose a random obstacle to spawn.
-        obstacle = "rock"
+        obstacle = random.choice(OBSTACLES)
 
         # Spawn the obstacle.
-        if obstacle == "rock":
+        if obstacle == ROCK:
             obstacle = {}
             obstacle["img"] = rock_img
             obstacle_rect = rock_img.get_rect()
 
-        # Set the obstacle's lane.
-        lane = random.randint(1, 3)
+        elif obstacle == BARREL:
+            obstacle = {}
+            obstacle["img"] = barrel_img
+            obstacle_rect = barrel_img.get_rect()
+
+        elif obstacle == OIL:
+            obstacle = {}
+            obstacle["img"] = oil_img
+            obstacle_rect = oil_img.get_rect()
+
+        # Set the obstacle's lane. 50% Chance it targets the car.
+        target = random.randint(1, 2)
+        
+        # Randomize the lane or set the lane to the car's lane.
+        if target == 1:
+            lane = random.randint(1, 3)
+        else:
+            lane = car_lane
+
         if lane == 1:
             y_pos = CENTERY - 160
         elif lane == 2:
             y_pos = CENTERY
-        else:
+        elif lane == 3:
             y_pos = CENTERY + 160
 
         # Set the obstacle's position.
@@ -197,7 +240,7 @@ def spawn_obstacles():
         obstacles.append(obstacle)
 
     else:
-        obstacle_frame += 1
+        obstacle_frame += random.randint(int(.5), int(2.5))
 
 
 def update_arrows():
@@ -206,7 +249,7 @@ def update_arrows():
 
     for arrow in arrows[:]:
         # Move the arrow.
-        arrow.x -= ARROWSPEED
+        arrow.x -= game_speed
 
         # Check if the arrow is off the screen.
         if arrow.x < 75:
@@ -269,9 +312,16 @@ def game_over():
     terminate()
 
 
+def create_font(size):
+    """Create a font of the respective size."""
+    font = pygame.font.Font('freesansbold.ttf', size)
+    return font
+
+
 def load_assets():
     """Load the game's assets."""
     global car_img, car_rect, bg_img, bg_rect, arrow_img, rock_img
+    global barrel_img, oil_img
 
     # Load the music.
     pygame.mixer.music.load("sounds/chaoz_impact.mp3")
@@ -291,9 +341,15 @@ def load_assets():
     arrow_img = pygame.image.load("images/arrow.png")
     arrow_img = pygame.transform.scale(arrow_img, (90, 90))
 
-    # Load in the obstacles, starting with the rock.
+    # Load in the obstacles.
     rock_img = pygame.image.load("images/rock.png")
-    rock_img = pygame.transform.scale(rock_img, (100, 100))
+    rock_img = pygame.transform.scale(rock_img, (75, 75))
+
+    barrel_img = pygame.image.load("images/barrel.png")
+    barrel_img = pygame.transform.scale(barrel_img, (100, 100))
+
+    oil_img = pygame.image.load("images/oil.png")
+    oil_img = pygame.transform.scale(oil_img, (130, 130))
 
     return
 
