@@ -21,8 +21,6 @@ ROCK = 'rock'
 BARREL = 'barrel'
 OIL = 'oil'
 OBSTACLES = [ROCK, BARREL, OIL]
-MINSPAWNTIME = 50
-MAXSPAWNTIME = 100
 
 # Color constants.
 WHITE = (255, 255, 255)
@@ -81,7 +79,7 @@ def title_screen():
 def run_game():
     """Run the game, and return when the player hits an obstacle."""
     global car_lane, score, arrows, arrow_frame, obstacles, obstacle_frame
-    global game_speed
+    global game_speed, obstacle_spawn
 
     # Start the music.
     pygame.mixer.music.play(-1, 0.0)
@@ -94,6 +92,7 @@ def run_game():
     obstacle_frame = 0
     obstacles = []
     game_speed = 7
+    obstacle_spawn = 80
     
     # Start the car on the left side center of the screen.
     car_rect.midleft = (80, CENTERY)
@@ -153,10 +152,11 @@ def run_game():
 
 def update_speed():
     """Make the game faster every five seconds."""
-    global game_speed 
+    global game_speed, obstacle_spawn
 
     if score % 500 == 0:
         game_speed += 2
+        obstacle_spawn - 10
 
 
 def draw_score(score):
@@ -193,7 +193,7 @@ def spawn_obstacles():
     """Spawn obstacles at random intervals."""
     global obstacles, obstacle_frame
 
-    if obstacle_frame >= random.randint(MINSPAWNTIME, MAXSPAWNTIME):
+    if obstacle_frame >= obstacle_spawn:
         # Reset the obstacle frame.
         obstacle_frame = 0
 
@@ -225,11 +225,11 @@ def spawn_obstacles():
         else:
             lane = car_lane
 
-        if lane == 1:
+        if lane == 3:
             y_pos = CENTERY - 160
         elif lane == 2:
             y_pos = CENTERY
-        elif lane == 3:
+        elif lane == 1:
             y_pos = CENTERY + 160
 
         # Set the obstacle's position.
@@ -240,7 +240,7 @@ def spawn_obstacles():
         obstacles.append(obstacle)
 
     else:
-        obstacle_frame += random.randint(int(.5), int(2.5))
+        obstacle_frame += 1
 
 
 def update_arrows():
