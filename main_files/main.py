@@ -3,7 +3,8 @@ where you can switch what lane you're in to avoid obstacles."""
 
 import pygame, sys, random 
 from pygame.locals import *
-from pathlib import Path 
+from pathlib import Path
+from webbrowser import open 
 
 # Set up window constants.
 WINDOWWIDTH = 1000
@@ -73,7 +74,90 @@ def main():
 
 def title_screen():
     """Run the game's title screen."""
-    pass 
+
+    # Set up the title screen fonts.
+    titlefont = create_font(100)
+    smallfont = create_font(40)
+    buttonfont = create_font(75)
+
+    # Set up the title screen text.
+    titletext = titlefont.render('Speed Racer', False, RED, WHITE)
+    titlerect = titletext.get_rect()
+    titlerect.center = (CENTERX, CENTERY - 200)
+
+    # Set up the credits text.
+    bytext = smallfont.render('By Collin Maryniak', False, BLACK, WHITE)
+    byrect = bytext.get_rect()
+    byrect.center = (CENTERX, CENTERY - 100)
+
+    # Set up the GitHub text.
+    gitsurf = smallfont.render("Visit this game's GitHub page below.", False,
+                               BLACK, WHITE)
+    gitrect = gitsurf.get_rect()
+    gitrect.center = (CENTERX, CENTERY)
+
+    # Set up the buttons.
+    gitbutton = pygame.Rect(0, 0, 300, 100)
+    gitbutton.center = (CENTERX - 200, CENTERY + 100)
+
+    startbutton = pygame.Rect(0, 0, 300, 100)
+    startbutton.center = (CENTERX + 200, CENTERY + 100)
+
+    # Add the text to go on top of the github button.
+    gittext = buttonfont.render('GitHub', False, PURPLE)
+    gittextrect = gittext.get_rect()
+    gittextrect.center = gitbutton.center
+
+    # Add the text to go on top of the start button.
+    starttext = buttonfont.render('Start', False, GREEN)
+    starttextrect = starttext.get_rect()
+    starttextrect.center = startbutton.center
+
+    # Run the title screen loop.
+    while True:
+        # Check for events.
+        for event in pygame.event.get():
+            # Check for quit.
+            if event.type == QUIT:
+                terminate()
+
+            # Check if the player is pressing a key.
+            if event.type == KEYDOWN:
+                # Check for ESCAPE key.
+                if event.key == K_ESCAPE:
+                    terminate()
+
+            # Check if the player is clicking.
+            if event.type == MOUSEBUTTONDOWN:
+                # Check if the player clicked the GitHub button.
+                if gitbutton.collidepoint(event.pos):
+                    # Open Speed Racer GitHub page.
+                    open("https://github.com/OmegaXK/Speed-Racer")
+
+                # Check if the player has clicked the start button.
+                if startbutton.collidepoint(event.pos):
+                    # Start the game by returning.
+                    return
+
+        # Blit the title screen background.
+        DISPLAYSURF.blit(title_img, (0, 0))
+
+        # Draw the buttons.
+        pygame.draw.rect(DISPLAYSURF, BLACK, gitbutton)
+        pygame.draw.rect(DISPLAYSURF, BLACK, startbutton)
+
+        # Draw the text that goes on top of the buttons.
+        DISPLAYSURF.blit(gittext, gittextrect)
+        DISPLAYSURF.blit(starttext, starttextrect)
+
+        # Draw the other text.
+        DISPLAYSURF.blit(titletext, titlerect)
+        DISPLAYSURF.blit(bytext, byrect)
+        DISPLAYSURF.blit(gitsurf, gitrect)
+
+        # Update.
+        pygame.display.update()
+        MAINCLOCK.tick(FPS)
 
 
 def run_game():
@@ -82,7 +166,7 @@ def run_game():
     global game_speed, obstacle_spawn
 
     # Start the music.
-    pygame.mixer.music.play(-1, 0.0)
+    #pygame.mixer.music.play(-1, 0.0)
 
     # Reset game variables.
     arrows = []
@@ -123,7 +207,7 @@ def run_game():
 
         # Draw the game. Start with the background.
         DISPLAYSURF.fill(BG_COLOR)
-        DISPLAYSURF.blit(bg_img, bg_rect)
+        DISPLAYSURF.blit(bg_img, (bg_rect))
 
         # Update the score.
         score += 1
@@ -140,10 +224,15 @@ def run_game():
 
         # Update the obstacles.
         spawn_obstacles()
-        update_obstacles()
+        quit = update_obstacles()
 
         # Draw the player.
         DISPLAYSURF.blit(car_img, car_rect)
+
+        # Check if the player has hit an obstacle.
+        if quit:
+            # Return to the game over screen.
+            return
 
         # Update the game.
         pygame.display.update()
@@ -156,7 +245,6 @@ def update_speed():
 
     if score % 500 == 0:
         game_speed += 2
-        obstacle_spawn - 10
 
 
 def draw_score(score):
@@ -178,7 +266,8 @@ def update_obstacles():
 
         # Check if the obstacle has hit the player.
         if obstacle['rect'].colliderect(car_rect):
-            terminate()
+            end = True 
+            return end
 
         # Check if the obstacle is off the screen.
         if obstacle["rect"].x < 75:
@@ -191,11 +280,12 @@ def update_obstacles():
 
 def spawn_obstacles():
     """Spawn obstacles at random intervals."""
-    global obstacles, obstacle_frame
+    global obstacles, obstacle_frame, obstacle_spawn
 
     if obstacle_frame >= obstacle_spawn:
         # Reset the obstacle frame.
         obstacle_frame = 0
+        obstacle_spawn -= 1
 
         # Choose a random obstacle to spawn.
         obstacle = random.choice(OBSTACLES)
@@ -262,7 +352,7 @@ def update_arrows():
 
 def spawn_arrows():
     """Spawn arrows if the time is right."""
-    global arrows, arrow_frame 
+    global arrows, arrow_frame
 
     offset = 160
     y_positions = [CENTERY - offset, CENTERY, CENTERY + offset]
@@ -309,7 +399,77 @@ def move_car_up(up):
 
 def game_over():
     """Run the game's game over screen."""
-    terminate()
+    
+    # Set up the game over fonts.
+    big_font = create_font(120)
+    button_font = create_font(75)
+
+    # Set up the game over text.
+    gamesurf = big_font.render('Game Over', False, BLACK, WHITE)
+    gamerect = gamesurf.get_rect()
+    gamerect.center = (CENTERX, CENTERY - 200)
+
+    # Set up the quit button.
+    quit_button = pygame.Rect(0, 0, 300, 100)
+    quit_button.center = (CENTERX + 200, CENTERY)
+
+    # Set up the restart button.
+    restart_button = pygame.Rect(0, 0, 300, 100)
+    restart_button.center = (CENTERX - 200, CENTERY)
+
+    # Set up the quit text.
+    quitsurf = button_font.render('Quit', False, RED)
+    quitrect = quitsurf.get_rect()
+    quitrect.center = quit_button.center
+
+    # Set up the restart text.
+    restartsurf = button_font.render('Restart', False, GREEN)
+    restartrect = restartsurf.get_rect()
+    restartrect.center = restart_button.center
+
+    # Run the game over loop.
+    while True:
+        # Check for events.
+        for event in pygame.event.get():
+            # Check for quit.
+            if event.type == QUIT:
+                terminate()
+
+            # Check if the player is pressing a key.
+            if event.type == KEYDOWN:
+                # Check for ESCAPE key.
+                if event.key == K_ESCAPE:
+                    terminate()
+
+            # Check if the player is clicking.
+            if event.type == MOUSEBUTTONDOWN:
+                # Check if the player clicked the quit button.
+                if quit_button.collidepoint(event.pos):
+                    # Quit the game.
+                    terminate()
+
+                # Check if the player clicked the restart button.
+                if restart_button.collidepoint(event.pos):
+                    # Restart the game.
+                    return
+                
+        # Blit the game over background.
+        DISPLAYSURF.blit(title_img, (0, 0))
+
+        # Draw the buttons.
+        pygame.draw.rect(DISPLAYSURF, BLACK, quit_button)
+        pygame.draw.rect(DISPLAYSURF, BLACK, restart_button)
+
+        # Draw the text that goes on top of the buttons.
+        DISPLAYSURF.blit(quitsurf, quitrect)
+        DISPLAYSURF.blit(restartsurf, restartrect)
+
+        # Draw the other text.
+        DISPLAYSURF.blit(gamesurf, gamerect)
+
+        # Update.
+        pygame.display.update()
+        MAINCLOCK.tick(FPS)
 
 
 def create_font(size):
@@ -321,16 +481,20 @@ def create_font(size):
 def load_assets():
     """Load the game's assets."""
     global car_img, car_rect, bg_img, bg_rect, arrow_img, rock_img
-    global barrel_img, oil_img
+    global barrel_img, oil_img, title_img, title_img_rect
 
     # Load the music.
     pygame.mixer.music.load("sounds/chaoz_impact.mp3")
 
     # Load in the background and position it.
-    bg_image = pygame.image.load("images/race_track.png")
-    bg_img = pygame.transform.scale(bg_image, (900, 500))
+    bg_img = pygame.image.load("images/race_track.png")
+    bg_img = pygame.transform.scale(bg_img, (900, 500))
     bg_rect = bg_img.get_rect()
     bg_rect.center = (CENTERX, CENTERY)
+
+    # Load in th title image and position it.
+    title_img = pygame.image.load("images/title_background.jpeg")
+    title_img = pygame.transform.scale(title_img, (WINDOWWIDTH, WINDOWHEIGHT))
 
     # Load the car sprite.
     car_img = pygame.image.load('images/car.png')
