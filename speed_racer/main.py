@@ -23,6 +23,9 @@ BARREL = 'barrel'
 OIL = 'oil'
 OBSTACLES = [ROCK, BARREL, OIL]
 
+# Define a constant for the path of the player's personal best (PB)
+PB_PATH = Path('game_data/personal_best.txt')
+
 # Color constants.
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -31,6 +34,7 @@ LIGHTRED = (255, 0, 0)
 RED = (255, 0 , 0)
 LIGHTGREEN = (0, 255, 0)
 GREEN = (0, 255, 0)
+DARKGREEN = (0, 100, 0)
 LIGHTBLUE = (0, 0, 255)
 BLUE = (0, 0, 255)
 LIGHTYELLOW = (255, 255, 0)
@@ -65,11 +69,15 @@ def main():
     # Load in the assets.
     load_assets()
 
+    # Check to make sure the pb file exists, and if not, create it.
+    if not PB_PATH.exists():
+        PB_PATH.write_text('0')
+
     # Run the main game loop.
     title_screen()
     while True:
-        run_game()
-        game_over()
+        score = run_game()
+        game_over(score)
 
 
 def title_screen():
@@ -163,10 +171,10 @@ def title_screen():
 def run_game():
     """Run the game, and return when the player hits an obstacle."""
     global car_lane, score, arrows, arrow_frame, obstacles, obstacle_frame
-    global game_speed, obstacle_spawn
+    global game_speed, obstacle_spawn, pace
 
     # Start the music.
-    #pygame.mixer.music.play(-1, 0.0)
+    pygame.mixer.music.play(-1, 0.0)
 
     # Reset game variables.
     arrows = []
@@ -177,6 +185,7 @@ def run_game():
     obstacles = []
     game_speed = 7
     obstacle_spawn = 80
+    pace = 0
     
     # Start the car on the left side center of the screen.
     car_rect.midleft = (80, CENTERY)
@@ -209,11 +218,12 @@ def run_game():
         DISPLAYSURF.fill(BG_COLOR)
         DISPLAYSURF.blit(bg_img, (bg_rect))
 
-        # Update the score.
-        score += 1
+        # Increase the game pace.
+        pace += 1
 
-        # Draw the score.
+        # Draw the score and the personal best.
         draw_score(score)
+        draw_pb()
 
         # Update the speed.
         update_speed()
@@ -231,8 +241,8 @@ def run_game():
 
         # Check if the player has hit an obstacle.
         if quit:
-            # Return to the game over screen.
-            return
+            # Return to the game over screen with the score
+            return score
 
         # Update the game.
         pygame.display.update()
@@ -243,7 +253,7 @@ def update_speed():
     """Make the game faster every five seconds."""
     global game_speed, obstacle_spawn
 
-    if score % 500 == 0:
+    if pace % 500 == 0:
         game_speed += 2
 
 
@@ -256,9 +266,23 @@ def draw_score(score):
     DISPLAYSURF.blit(scoresurf, scorerect)
 
 
+def draw_pb():
+    """Draw the pb text on the screen."""
+
+    # Load the current pb.
+    pb = get_pb()
+
+    # Draw the text.
+    pbfont = create_font(40)
+    pbsurf = pbfont.render(f"Personal Best: {pb}", False, BLACK)
+    pbrect = pbsurf.get_rect()
+    pbrect.right = WINDOWWIDTH
+    DISPLAYSURF.blit(pbsurf, pbrect)
+
+
 def update_obstacles():
     """Update the currently active obstacles."""
-    global obstacles
+    global obstacles, score
 
     for obstacle in obstacles[:]:
         # Move the obstacle.
@@ -271,8 +295,9 @@ def update_obstacles():
 
         # Check if the obstacle is off the screen.
         if obstacle["rect"].x < 75:
-            # Remove the obstacle.
+            # Remove the obstacle and give the player points.
             obstacles.remove(obstacle)
+            score += 10
 
         # Draw the obstacle.
         DISPLAYSURF.blit(obstacle["img"], obstacle["rect"])
@@ -397,8 +422,14 @@ def move_car_up(up):
             car_lane -= 1
 
 
-def game_over():
+def game_over(score):
     """Run the game's game over screen."""
+
+    # Stop the music.
+    pygame.mixer.music.stop()
+
+    # Play the game over sound.
+    game_over_sound.play()
     
     # Set up the game over fonts.
     big_font = create_font(120)
@@ -427,6 +458,14 @@ def game_over():
     restartrect = restartsurf.get_rect()
     restartrect.center = restart_button.center
 
+    # If the player got a new high score, then update the pb file.
+    current_pb = get_pb()
+    if int(score) > int(current_pb):
+        new_pb = True
+        write_new_pb(str(score))
+    else:
+        new_pb = False
+
     # Run the game over loop.
     while True:
         # Check for events.
@@ -451,6 +490,8 @@ def game_over():
                 # Check if the player clicked the restart button.
                 if restart_button.collidepoint(event.pos):
                     # Restart the game.
+                    # Make sure the game over sound stops.
+                    game_over_sound.stop()
                     return
                 
         # Blit the game over background.
@@ -466,10 +507,38 @@ def game_over():
 
         # Draw the other text.
         DISPLAYSURF.blit(gamesurf, gamerect)
+        draw_new_pb_msg(new_pb, score)
 
         # Update.
         pygame.display.update()
         MAINCLOCK.tick(FPS)
+
+
+def draw_new_pb_msg(new_pb, pb):
+    """Draw a message saying the player got a new pb."""
+    font = create_font(50)
+
+    # Only draw the message if the player got a new pb.
+    if new_pb:
+        textsurf = font.render(f'You got a new personal best of {pb}!',
+                               False, DARKGREEN, WHITE)
+        textrect = textsurf.get_rect()
+        textrect.center = (CENTERX, CENTERY + 200)
+        DISPLAYSURF.blit(textsurf, textrect)
+
+
+def write_new_pb(new_pb):
+    """Write a new pb to the file."""
+
+    PB_PATH.write_text(new_pb)
+    return
+
+
+def get_pb():
+    """Retrieve the current pb from the text file and return it."""
+
+    pb = PB_PATH.read_text(encoding='UTF-8')
+    return pb
 
 
 def create_font(size):
@@ -481,10 +550,13 @@ def create_font(size):
 def load_assets():
     """Load the game's assets."""
     global car_img, car_rect, bg_img, bg_rect, arrow_img, rock_img
-    global barrel_img, oil_img, title_img, title_img_rect
+    global barrel_img, oil_img, title_img, title_img_rect, game_over_sound
 
     # Load the music.
     pygame.mixer.music.load("sounds/chaoz_impact.mp3")
+
+    # Load in the sounds.
+    game_over_sound = pygame.mixer.Sound("sounds/game_over.wav")
 
     # Load in the background and position it.
     bg_img = pygame.image.load("images/race_track.png")
