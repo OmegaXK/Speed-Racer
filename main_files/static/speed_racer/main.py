@@ -121,6 +121,24 @@ def title_screen():
     starttextrect = starttext.get_rect()
     starttextrect.center = startbutton.center
 
+    # Load in the instructions.
+    path = Path('game_data/instructions.txt')
+    instructions = path.read_text(encoding='UTF-8')
+    instruc_lines = instructions.splitlines()
+    instruc1 = instruc_lines[0]
+    instruc2 = instruc_lines[1]
+    instruc1.strip()
+    instruc2.strip()
+
+    # Create the instructions text.
+    instrucsurf1 = smallfont.render(instruc1, False, RED, WHITE)
+    instrucrect1 = instrucsurf1.get_rect()
+    instrucrect1.center = (CENTERX, CENTERY + 200)
+
+    instrucsurf2 = smallfont.render(instruc2, False, RED, WHITE)
+    instrucrect2 = instrucsurf1.get_rect()
+    instrucrect2.center = (CENTERX - 40, CENTERY + 235)
+
     # Run the title screen loop.
     while True:
         # Check for events.
@@ -162,6 +180,8 @@ def title_screen():
         DISPLAYSURF.blit(titletext, titlerect)
         DISPLAYSURF.blit(bytext, byrect)
         DISPLAYSURF.blit(gitsurf, gitrect)
+        DISPLAYSURF.blit(instrucsurf1, instrucrect1)
+        DISPLAYSURF.blit(instrucsurf2, instrucrect2)
 
         # Update.
         pygame.display.update()
