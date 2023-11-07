@@ -1,0 +1,15 @@
+/* Stylsheet for the Speed Racer Download Page */
+
+body {
+    text-align: center;
+    background-color:  #DCE9EE;
+}
+
+p {
+    font-size: 22px;
+}
+
+p-1 {
+    font-size: 24px;
+    font-weight: bold;
+}

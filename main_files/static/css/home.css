@@ -1,0 +1,19 @@
+/* Stylsheet for the Speed Racer Home Page */
+
+body {
+    text-align: center;
+    background-color:  #DCE9EE;
+}
+
+p-1 {
+    font-size: 24px;
+}
+
+button {
+    width: 125px;
+    height: 75px;
+    border-width: 3px;
+    background-color: lightgreen;
+    cursor: pointer;
+    font-size: 20px;
+}   

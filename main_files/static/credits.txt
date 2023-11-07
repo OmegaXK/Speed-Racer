@@ -1,15 +1,27 @@
 Speed Racer Credits
 
-All coding by me.
+
+All coding by Collin Maryniak.
 IDE: Visual Studio Code (VS Code)
 VS Code download: https://code.visualstudio.com/download
+
 
 My resources:
 Image editor: https://pixlr.com/x/
 Image background remover: https://www.remove.bg/
+RGB color picker: https://www.rapidtables.com/web/color/RGB_Color.html
 
 
-Images:
+Extra help from:
+Cyrus Hoover (https://youtube.com/@rexymon)
+Adeume Valore ()
+
+
+Special shoutout to Stack Overflow for solutions to most issues I ran into.
+Link: https://stackoverflow.com/
+
+
+In-game Images:
 
 Car image:
 https://www.vectorstock.com/royalty-free-vector/pixel-old-race-car-vector-18351703
@@ -32,6 +44,10 @@ Oil image:
 https://www.istockphoto.com/vector/puddle-of-oil-slick-spill-clipart-gm520171234-90877721
 Download: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9xeAJ79H9roD-WArwJRo6n1NebUB1TunMUbwD2IUzB76xgPE5P8pQAQOIHg:https://media.istockphoto.com/id/520171234/vector/puddle-of-oil-slick-spill-clipart.jpg%3Fs%3D612x612%26w%3D0%26k%3D20%26c%3DG3wPQ2V2mD5GzjVVEEpI5UectKpM5F6lNauc7asSrug%3D&s
 
+Title and game over screen background:
+https://stock.adobe.com/images/retro-video-game-race-arcade-in-pixel-art-style-vector-illustration-8-bit-pixel-graphics-with-city-background-with-racing-track/481790131
+Download: https://as2.ftcdn.net/v2/jpg/04/81/79/01/1000_F_481790131_p33Lyws3LxRAhAI36biUYoxnH6MqaxAW.jpg
+
 
 Sounds:
 
@@ -39,3 +55,8 @@ Main theme song:
 Chaoz Impact, by ParagonX9
 Chaoz Impact Newgrounds page (you can download it from here): https://www.newgrounds.com/audio/listen/152047
 Chaoz Impact YouTube video: https://www.youtube.com/watch?v=BvAnA5XRrUE
+
+Game over sound:
+Literally the Scratch "Oops" sound 
+Made by the developers of Scratch at MIT 
+Download it on Scratch: https://scratch.mit.edu
