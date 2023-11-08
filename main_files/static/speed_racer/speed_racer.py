@@ -24,7 +24,7 @@ OIL = 'oil'
 OBSTACLES = [ROCK, BARREL, OIL]
 
 # Define a constant for the path of the player's personal best (PB)
-PB_PATH = Path('/Documents/GitHub/Speed-Racer/main_files/static/speed_racer/game_data/personal_best.txt')
+PB_PATH = Path('game_data/personal_best.txt')
 
 # Color constants.
 WHITE = (255, 255, 255)
@@ -573,7 +573,7 @@ def load_assets():
     global barrel_img, oil_img, title_img, title_img_rect, game_over_sound
 
     # Load the music.
-    pygame.mixer.music.load("/Documents/GitHub/Speed-Racer/main_files/static/speed_racer/sounds/chaoz_impact.mp3")
+    pygame.mixer.music.load("sounds/chaoz_impact.mp3")
 
     # Load in the sounds.
     game_over_sound = pygame.mixer.Sound("sounds/game_over.wav")
