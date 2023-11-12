@@ -1,0 +1,2 @@
+Use the up and down arrow keys to move.
+X out of the window or press ESCAPE to quit.
