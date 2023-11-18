@@ -10,6 +10,7 @@ My resources:
 Image editor: https://pixlr.com/x/
 Image background remover: https://www.remove.bg/
 RGB color picker: https://www.rapidtables.com/web/color/RGB_Color.html
+HTML Favicon generator: https://realfavicongenerator.net/
 
 
 Extra help from:
