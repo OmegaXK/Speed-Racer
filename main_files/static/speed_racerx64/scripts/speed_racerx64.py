@@ -24,7 +24,7 @@ OIL = 'oil'
 OBSTACLES = [ROCK, BARREL, OIL]
 
 # Define a constant for the path of the player's personal best (PB)
-PB_PATH = Path('downloads/speedracerx64/speedracerx64/game_data/personal_best.txt')
+PB_PATH = Path('game_data/personal_best.txt')
 
 # Color constants.
 WHITE = (255, 255, 255)
@@ -122,7 +122,7 @@ def title_screen():
     starttextrect.center = startbutton.center
 
     # Load in the instructions.
-    path = Path('downloads/speedracerx64/speedracerx64/game_data/instructions.txt')
+    path = Path('game_data/instructions.txt')
     instructions = path.read_text(encoding='UTF-8')
     instruc_lines = instructions.splitlines()
     instruc1 = instruc_lines[0]
@@ -573,38 +573,38 @@ def load_assets():
     global barrel_img, oil_img, title_img, title_img_rect, game_over_sound
 
     # Load the music.
-    pygame.mixer.music.load("downloads/speedracerx64/speedracerx64/sounds/chaoz_impact.mp3")
+    pygame.mixer.music.load("sounds/chaoz_impact.mp3")
 
     # Load in the sounds.
-    game_over_sound = pygame.mixer.Sound("downloads/speedracerx64/speedracerx64/sounds/game_over.wav")
+    game_over_sound = pygame.mixer.Sound("sounds/game_over.wav")
 
     # Load in the background and position it.
-    bg_img = pygame.image.load("downloads/speedracerx64/speedracerx64/images/race_track.png")
+    bg_img = pygame.image.load("images/race_track.png")
     bg_img = pygame.transform.scale(bg_img, (900, 500))
     bg_rect = bg_img.get_rect()
     bg_rect.center = (CENTERX, CENTERY)
 
     # Load in th title image and position it.
-    title_img = pygame.image.load("downloads/speedracerx64/speedracerx64/images/title_background.jpeg")
+    title_img = pygame.image.load("images/title_background.jpeg")
     title_img = pygame.transform.scale(title_img, (WINDOWWIDTH, WINDOWHEIGHT))
 
     # Load the car sprite.
-    car_img = pygame.image.load('downloads/speedracerx64/speedracerx64/images/car.png')
+    car_img = pygame.image.load('images/car.png')
     car_img = pygame.transform.scale(car_img, (300, 100))
     car_rect = car_img.get_rect()
 
     # Load the arrow image.
-    arrow_img = pygame.image.load("downloads/speedracerx64/speedracerx64/images/arrow.png")
+    arrow_img = pygame.image.load("images/arrow.png")
     arrow_img = pygame.transform.scale(arrow_img, (90, 90))
 
     # Load in the obstacles.
-    rock_img = pygame.image.load("downloads/speedracerx64/speedracerx64/images/rock.png")
+    rock_img = pygame.image.load("images/rock.png")
     rock_img = pygame.transform.scale(rock_img, (75, 75))
 
-    barrel_img = pygame.image.load("downloads/speedracerx64/speedracerx64/images/barrel.png")
+    barrel_img = pygame.image.load("images/barrel.png")
     barrel_img = pygame.transform.scale(barrel_img, (100, 100))
 
-    oil_img = pygame.image.load("downloads/speedracerx64/speedracerx64/images/oil.png")
+    oil_img = pygame.image.load("images/oil.png")
     oil_img = pygame.transform.scale(oil_img, (130, 130))
 
     return
