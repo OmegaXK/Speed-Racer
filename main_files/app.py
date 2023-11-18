@@ -1,4 +1,4 @@
-from flask import Flask, render_template 
+from flask import Flask, render_template
 
 app = Flask(__name__, static_folder='static')
 
@@ -18,4 +18,4 @@ def credits():
     return render_template('credits.html')
 
 if __name__ == '__main__':
-    app.run(port=5002)
+    app.run()
