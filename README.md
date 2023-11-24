@@ -4,7 +4,7 @@
 
 # How to Install
 Installing Speed Racer is extremely easy.
-1. Go to this website (<a href='https://speedracer.pythonanywhere.com/downloads' target='blank'>Link</a>)
+1. Go to this website (<a href='https://speedracer.pythonanywhere.com/download' target='blank'>Link</a>)
 2. Follow the instructions for your operating system
 3. Good luck and have fun!
 
