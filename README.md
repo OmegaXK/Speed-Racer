@@ -4,7 +4,7 @@
 
 # How to Install
 Installing Speed Racer is extremely easy.
-1. Go to this website (<a href='https://speedracer.pythonanywhere.com/download' target='_blank'>Link</a>)
+1. Go to this website (<a href='https://speedracer.pythonanywhere.com/download' target='_blank'>link</a>)
 2. Follow the instructions for your operating system
 3. Good luck and have fun!
 
@@ -19,5 +19,5 @@ These are the basic controls of the game.
 # Credits
 - All programming is done by me
 - I had some inspiration from Cyrus Hoover and Chaos Defender
-- All of the other credits are found here (<a href='https://speedracer.pythonanywhere.com/credits' target='_blank'>Link</a>)
+- All of the other credits are found here (<a href='https://speedracer.pythonanywhere.com/credits' target='_blank'>link</a>)
 - Or you can look at the "credits.txt" file
